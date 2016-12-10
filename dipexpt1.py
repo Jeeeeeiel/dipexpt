@@ -116,9 +116,6 @@ class BMP(object):
                 tmpdata[i, j] = trans_matrix.dot(self.data[i, j, ::-1].T)
                 # tmpdata[i, j] = reverse_trans_matrix.dot(tmpdata[i, j].T)[::-1]
 
-        # img = cv.merge((tmpdata[::-1, :, 0], tmpdata[::-1, :, 1], tmpdata[::-1, :, 1]))
-        # cv.imwrite('/Users/Jeiel/Desktop/' + s + str(YIQ[0] or XYZ[0]) + str(YIQ[1] or XYZ[1]) + str(YIQ[2] or XYZ[2]) + '.jpg', img)
-
         with open('/Users/Jeiel/Desktop/' + s + str(YIQ[0] or XYZ[0]) + str(YIQ[1] or XYZ[1]) + str(YIQ[2] or XYZ[2]) + '.bmp', 'wb') as file:
             file.write(struct.pack('<ccIHHI', *self.bitmapfileheader))
             file.write(struct.pack('<IIIHHIIIIII', *self.bitMapInfoHeader))
