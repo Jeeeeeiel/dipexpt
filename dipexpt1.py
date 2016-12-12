@@ -146,7 +146,7 @@ class BMP(object):
                 tmpdata[i, j] = trans_matrix.dot(self.data[i, j, ::-1].T)
                 # tmpdata[i, j] = reverse_trans_matrix.dot(tmpdata[i, j].T)[::-1]
 
-        with open('/Users/Jeiel/Desktop/YcrCb.bmp', 'wb') as file:
+        with open('/Users/Jeiel/Desktop/YCrCb.bmp', 'wb') as file:
             file.write(struct.pack('<ccIHHI', *self.bitmapfileheader))
             file.write(struct.pack('<IIIHHIIIIII', *self.bitMapInfoHeader))
             for B in tmpdata:
@@ -154,6 +154,13 @@ class BMP(object):
 
         self.data = tmpdata
 
+    def change_to_gray(self):  # assign the values in b channel to g r
+        self.data[:, :, 1] = self.data[:, :, 2] = self.data[:, :, 0]
+        with open('/Users/Jeiel/Desktop/gray.bmp', 'wb') as file:
+            file.write(struct.pack('<ccIHHI', *self.bitmapfileheader))
+            file.write(struct.pack('<IIIHHIIIIII', *self.bitMapInfoHeader))
+            for B in self.data:
+                file.write(B)
 
 if __name__ == '__main__':
     # binary image
