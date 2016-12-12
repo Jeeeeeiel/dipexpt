@@ -165,6 +165,22 @@ if __name__ == '__main__':
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
     # save(bmp, data, '/Users/Jeiel/Desktop/DCT_8*8_x_y.bmp')
 
+    # DCT: 8 * 8 block, use LEFT TOP coefficient
+    # data = bmp.data.copy()
+    # for i in range((data.shape[0] + 7) // 8):  # height
+    #     for j in range((data.shape[1] + 7) // 8):  # width
+    #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
+    #         # print(DCT(subdata)[:, :, 0])
+    #         subdata = DCT(subdata)
+    #         left = 3
+    #         subdata[left:, :, :] = 0
+    #         subdata[:, left:, :] = 0
+    #         # print(subdata[:, :, 0])
+    #         subdata = np.array(IDCT(subdata), dtype=np.uint8)
+
+    #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
+    # save(bmp, data, '/Users/Jeiel/Desktop/LT_DCT_8*8_x_y.bmp')
+
     # Quantize DCT: 8 * 8 block
     # data = bmp.data.copy()
     # for i in range((data.shape[0] + 7) // 8):  # height
