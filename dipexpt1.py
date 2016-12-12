@@ -136,26 +136,43 @@ class BMP(object):
             for B in tmpdata:
                 file.write(B)
 
+    def change_to_YCrCb(self):
+        trans_matrix = np.array([[0.299, 0.587, 0.114],
+                                [0.500, -0.4187, -0.0813],
+                                [-0.1687, -0.3313, 0.500]])
+        tmpdata = np.zeros((self.bitMapInfoHeader[2], self.bitMapInfoHeader[1], 3), dtype=np.uint8)
+        for i in range(self.bitMapInfoHeader[2]):
+            for j in range(self.bitMapInfoHeader[1]):
+                tmpdata[i, j] = trans_matrix.dot(self.data[i, j, ::-1].T)
+                # tmpdata[i, j] = reverse_trans_matrix.dot(tmpdata[i, j].T)[::-1]
+
+        with open('/Users/Jeiel/Desktop/YcrCb.bmp', 'wb') as file:
+            file.write(struct.pack('<ccIHHI', *self.bitmapfileheader))
+            file.write(struct.pack('<IIIHHIIIIII', *self.bitMapInfoHeader))
+            for B in tmpdata:
+                file.write(B)
+
+        self.data = tmpdata
+
 
 if __name__ == '__main__':
-    binary image
-    bmp = BMP('/Users/Jeiel/Dropbox/数字图像处理/实验/实验一素材/Bin64/TUANJIE.BMP')
-    bmp.saveNonRGB()
-    bmp = BMP('/Users/Jeiel/Dropbox/数字图像处理/实验/实验一素材/Color128/LENA.BMP')
+    # binary image
+    # bmp = BMP('/Users/Jeiel/Dropbox/数字图像处理/实验/实验一素材/Bin64/TUANJIE.BMP')
+    # bmp.saveNonRGB()
 
     # color image
-    # if bmp.isBMP and bmp.bitMapInfoHeader[4] == 24:
-    #     bmp.saveRGB(R=True, G=True, B=True)
-    #     bmp.saveRGB(R=True)
-    #     bmp.saveRGB(G=True)
-    #     bmp.saveRGB(B=True)
-    #     bmp.saveYIQorXYZ(YIQ=[True, False, False])
-    #     bmp.saveYIQorXYZ(YIQ=[False, True, False])
-    #     bmp.saveYIQorXYZ(YIQ=[False, False, True])
-    #     bmp.saveYIQorXYZ(XYZ=[True, False, False])
-    #     bmp.saveYIQorXYZ(XYZ=[False, True, False])
-    #     bmp.saveYIQorXYZ(XYZ=[False, False, True])
-    #     bmp.saveHSI(H=True)
-    #     bmp.saveHSI(S=True)
-    #     bmp.saveHSI(I=True)
-
+    bmp = BMP('/Users/Jeiel/Dropbox/数字图像处理/实验/实验一素材/Color128/LENA.BMP')
+    if bmp.isBMP and bmp.bitMapInfoHeader[4] == 24:
+        bmp.saveRGB(R=True, G=True, B=True)
+        bmp.saveRGB(R=True)
+        bmp.saveRGB(G=True)
+        bmp.saveRGB(B=True)
+        bmp.saveYIQorXYZ(YIQ=[True, False, False])
+        bmp.saveYIQorXYZ(YIQ=[False, True, False])
+        bmp.saveYIQorXYZ(YIQ=[False, False, True])
+        bmp.saveYIQorXYZ(XYZ=[True, False, False])
+        bmp.saveYIQorXYZ(XYZ=[False, True, False])
+        bmp.saveYIQorXYZ(XYZ=[False, False, True])
+        bmp.saveHSI(H=True)
+        bmp.saveHSI(S=True)
+        bmp.saveHSI(I=True)
