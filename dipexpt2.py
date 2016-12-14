@@ -129,25 +129,25 @@ if __name__ == '__main__':
     bmp.change_to_YCrCb()
     bmp.change_to_gray()  # assign the values in b channel to g r
     # whole image
-    # data = np.array(DFT(bmp.data.copy()), dtype=np.uint8)
-    # save(bmp, data, '/Users/Jeiel/Desktop/DFT_whole_image_y.bmp')
-    # data = np.array(DCT(bmp.data.copy()), dtype=np.uint8)
-    # save(bmp, data, '/Users/Jeiel/Desktop/DCT_whole_image_x_y.bmp')
-    # data = np.array(IDCT(DCT(bmp.data.copy())), dtype=np.uint8)
-    # save(bmp, data, '/Users/Jeiel/Desktop/IDCT_whole_image_x_y.bmp')
+    # data = np.array(DFT(bmp.data.copy()[::-1, :, :]), dtype=np.uint8)
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DFT_whole_image_y.bmp')
+    # data = np.array(DCT(bmp.data.copy()[::-1, :, :]), dtype=np.uint8)
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DCT_whole_image_x_y.bmp')
+    # data = np.array(IDCT(DCT(bmp.data.copy()[::-1, :, :])), dtype=np.uint8)
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/IDCT_whole_image_x_y.bmp')
 
     # DFT: 8 * 8 block
-    # data = bmp.data.copy()
+    # data = bmp.data.copy()[::-1, :, :]
     # for i in range((data.shape[0] + 7) // 8):  # height
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
     #         subdata = np.array(DFT(subdata), dtype=np.uint8)
     #         # subdata = np.fft.ifft(subdata, axis=0)  # check
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
-    # save(bmp, data, '/Users/Jeiel/Desktop/DFT_8*8_y.bmp')
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DFT_8*8_y.bmp')
 
     # DCT: 8 * 8 block
-    # data = bmp.data.copy()
+    # data = bmp.data.copy()[::-1, :, :]
     # for i in range((data.shape[0] + 7) // 8):  # height
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
@@ -163,10 +163,10 @@ if __name__ == '__main__':
     #         # subdata = tmpdata
 
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
-    # save(bmp, data, '/Users/Jeiel/Desktop/DCT_8*8_x_y.bmp')
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DCT_8*8_x_y.bmp')
 
     # DCT: 8 * 8 block, use LEFT TOP coefficient
-    # data = bmp.data.copy()
+    # data = bmp.data.copy()[::-1, :, :]
     # for i in range((data.shape[0] + 7) // 8):  # height
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
@@ -176,13 +176,13 @@ if __name__ == '__main__':
     #         subdata[left:, :, :] = 0
     #         subdata[:, left:, :] = 0
     #         # print(subdata[:, :, 0])
-    #         subdata = np.array(IDCT(subdata), dtype=np.uint8)
+    #         # subdata = np.array(IDCT(subdata), dtype=np.uint8)
 
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
-    # save(bmp, data, '/Users/Jeiel/Desktop/LT_DCT_8*8_x_y.bmp')
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/LT_DCT_8*8_x_y.bmp')
 
     # Quantize DCT: 8 * 8 block
-    # data = bmp.data.copy()
+    # data = bmp.data.copy()[::-1, :, :]
     # for i in range((data.shape[0] + 7) // 8):  # height
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
@@ -193,4 +193,4 @@ if __name__ == '__main__':
     #         # subdata = np.array(IDCT(IQuantize(Quantize(DCT(subdata)))), dtype=np.uint8) # IDCT<-IQuantize<-Quantize<-DCT
 
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
-    # save(bmp, data, '/Users/Jeiel/Desktop/Quantize_DCT_8*8_x_y.bmp')
+    # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/Quantize_DCT_8*8_x_y.bmp')
