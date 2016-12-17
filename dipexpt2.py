@@ -124,14 +124,20 @@ def save(bmp, data, filename):
             file.write(B)
 
 
+def preprocess_before_convert2uint8(data):
+    data[data > 255] = 255
+    data[data < 0] = 0
+    return data
+
+
 if __name__ == '__main__':
     bmp = BMP('/Users/Jeiel/Dropbox/数字图像处理/实验/实验一素材/Color128/LENA.BMP')
     bmp.change_to_YCrCb()
     bmp.change_to_gray()  # assign the values in b channel to g r
     # whole image
-    # data = np.array(DFT(bmp.data.copy()[::-1, :, :]), dtype=np.uint8)
+    # data = np.array(preprocess_before_convert2uint8(DFT(bmp.data.copy()[::-1, :, :])), dtype=np.uint8)
     # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DFT_whole_image_y.bmp')
-    # data = np.array(DCT(bmp.data.copy()[::-1, :, :]), dtype=np.uint8)
+    # data = np.array(preprocess_before_convert2uint8(DCT(bmp.data.copy()[::-1, :, :])), dtype=np.uint8)
     # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DCT_whole_image_x_y.bmp')
     # data = np.array(IDCT(DCT(bmp.data.copy()[::-1, :, :])), dtype=np.uint8)
     # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/IDCT_whole_image_x_y.bmp')
@@ -141,7 +147,7 @@ if __name__ == '__main__':
     # for i in range((data.shape[0] + 7) // 8):  # height
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
-    #         subdata = np.array(DFT(subdata), dtype=np.uint8)
+    #         subdata = np.array(preprocess_before_convert2uint8(DFT(subdata)), dtype=np.uint8)
     #         # subdata = np.fft.ifft(subdata, axis=0)  # check
     #         data[i * 8: i * 8 + 8, j * 8: j * 8 + 8] = subdata
     # save(bmp, data[::-1, :, :], '/Users/Jeiel/Desktop/DFT_8*8_y.bmp')
@@ -152,7 +158,7 @@ if __name__ == '__main__':
     #     for j in range((data.shape[1] + 7) // 8):  # width
     #         subdata = data[i * 8: i * 8 + 8, j * 8: j * 8 + 8]
 
-    #         # subdata = np.array(DCT(subdata), dtype=np.uint8)  # DCT
+    #         subdata = np.array(preprocess_before_convert2uint8(DCT(subdata)), dtype=np.uint8)  # DCT
     #         # subdata = np.array(IDCT(DCT(subdata)), dtype=np.uint8)  # IDCT
 
     #         # for check
