@@ -2,6 +2,8 @@
 # __*__ coding: utf-8 __*__
 
 import numpy as np
+import random
+import math
 from dipexpt1 import BMP
 from dipexpt2 import save
 from dipexpt3 import Integral_Histogram
@@ -33,9 +35,48 @@ def binarization_using_otsu(data):
 
 
 def binarization_using_half_tone(data):
+    x = np.zeros((data.shape[0] + 2, data.shape[1] + 4))  # pad, left:2, right:2,bottom:2
+    x[:-2, 2: -2] = data[:, :, 0]
+    y = np.zeros(data[:, :, 0].shape)
+    TH = 0.5 * 255
+    K = np.array([[0, 0, 0, 7, 5], [3, 5, 7, 5, 3], [1, 3, 5, 3, 1]]) / 48
+    m = K.shape[0]
+    n = K.shape[1]
+    for i in range(data[:, :, 0].shape[0]):
+        for j in range(data[:, :, 0].shape[1]):
+            y[i, j] = 255 * (x[i, j + 2] > TH)
+            e = x[i, j + 2] - y[i, j]
+            x[i: i + m, j: j+n] = x[i: i + m, j: j+n] + K * e
+    data[:, :, 0] = data[:, :, 1] = data[:, :, 2] = y
+    return data
+
+
+def salt_and_pepper_noise(data, SNR=0.2):  # SNR from 0.0 to 1.0
+    height = data.shape[0]
+    width = data.shape[1]
+    size = height * width
+    samples = random.sample(range(size), math.ceil(size * SNR))
+    for s in samples:
+        data[s // height, s % height, 0] = (random.random() >= 0.5) * 255
+    data[:, :, 1] = data[:, :, 2] = data[:, :, 0]
+    return data
+
+
+def gaussian_noise(data, mu=0, sigma=20):
+    tmpdata = np.zeros(data.shape[0: 2])
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            tmpdata[i, j] = data[i, j, 0] + random.gauss(mu, sigma)
+            if tmpdata[i, j] > 255:
+                tmpdata[i, j] = 255
+            if tmpdata[i, j] < 0:
+                tmpdata[i, j] = 0
+    data[:, :, 0] = data[:, :, 1] = data[:, :, 2] = tmpdata
+    return data
+
+
+def median_filter(data):
     pass
-
-
 
 
 def main():
@@ -45,6 +86,12 @@ def main():
     save(bmp, data, '/Users/Jeiel/Desktop/binary.bmp')
     data = binarization_using_half_tone(bmp.data.copy())
     save(bmp, data, '/Users/Jeiel/Desktop/half-tone.bmp')
+    data = salt_and_pepper_noise(bmp.data.copy())
+    save(bmp, data, '/Users/Jeiel/Desktop/salt_and_pepper_noise.bmp')
+
+    data = gaussian_noise(bmp.data.copy())
+    save(bmp, data, '/Users/Jeiel/Desktop/gaussian_noise.bmp')
+
 
 if __name__ == '__main__':
     main()
