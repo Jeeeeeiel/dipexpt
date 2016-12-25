@@ -51,7 +51,7 @@ def binarization_using_half_tone(data):
     return data
 
 
-def salt_and_pepper_noise(data, SNR=0.2):  # SNR from 0.0 to 1.0
+def salt_and_pepper_noise(data, SNR=0.1):  # SNR from 0.0 to 1.0
     height = data.shape[0]
     width = data.shape[1]
     size = height * width
@@ -75,8 +75,14 @@ def gaussian_noise(data, mu=0, sigma=20):
     return data
 
 
-def median_filter(data):
-    pass
+def median_filter(data, radius=1):  # filter size: radius * 2 + 1
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            # print(data[(i - radius >= 0) * (i - radius): i + radius + 1, (j - radius >= 0) * (j - radius): j + radius + 1, 0].shape)
+            data[i, j, 0] = np.median(data[(i - radius >= 0) * (i - radius): i + radius + 1, (j - radius >= 0) * (j - radius): j + radius + 1, 0])
+            # print(data[(i - radius >= 0) * (i - radius): i + radius + 1, (j - radius >= 0) * (j - radius): j + radius + 1, 0])
+    data[:, :, 1] = data[:, :, 2] = data[:, :, 0]
+    return data
 
 
 def main():
@@ -88,7 +94,8 @@ def main():
     save(bmp, data, '/Users/Jeiel/Desktop/half-tone.bmp')
     data = salt_and_pepper_noise(bmp.data.copy())
     save(bmp, data, '/Users/Jeiel/Desktop/salt_and_pepper_noise.bmp')
-
+    data = median_filter(data)
+    save(bmp, data, '/Users/Jeiel/Desktop/median_filter.bmp')
     data = gaussian_noise(bmp.data.copy())
     save(bmp, data, '/Users/Jeiel/Desktop/gaussian_noise.bmp')
 
