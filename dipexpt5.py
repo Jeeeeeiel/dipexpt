@@ -10,6 +10,8 @@ from PIL import ImageEnhance
 # from scipy import ndimage
 import matplotlib.pyplot as plt
 import math
+import os
+# import pytesseract
 
 
 def horizontal_hist(data):
@@ -81,21 +83,34 @@ def split_text_column(data):  # data contains single text line
                 #                 break
                 #         else:
                 #             continue_appear = 0
+            elif column_width > 1.3 * max_column_width:
+                i = i - column_width
+                i = i + math.ceil(max_column_width * 0.8) + np.argmax(hist[i + math.ceil(max_column_width * 0.8): i + math.ceil(max_column_width * 1.2)]) + 1
             text_column_record.append(i)
             column_width = 0
             i += 1
         else:
             i += 1
             column_width += 1
-    im = Image.new('L', (data.shape[1], data.shape[0] * 2), 255)
-    pixels = im.load()
-    for i in range(im.width):
-        for j in range(data.shape[0]):
-            pixels[i, j + data.shape[0]] = pixels[i, j] = int(data[j, i])
-    draw = ImageDraw.Draw(im)
-    for i in range(len(text_column_record)):
-        draw.line([(text_column_record[i], 0), (text_column_record[i], data.shape[0])], fill='#ff0000')
-    im.show()
+    # for show
+    # im = Image.new('L', (data.shape[1], data.shape[0] * 2), 255)
+    # pixels = im.load()
+    # for i in range(im.width):
+    #     for j in range(data.shape[0]):
+    #         pixels[i, j + data.shape[0]] = pixels[i, j] = int(data[j, i])
+    # im = im.convert('RGB')
+    # draw = ImageDraw.Draw(im, mode='RGB')
+    # for i in range(len(text_column_record)):
+    #     draw.line([(text_column_record[i], 0), (text_column_record[i], data.shape[0])], fill='#ff0000')
+    # im.show()
+
+    tmp_record = list()
+    for i in range(len(text_column_record) - 1):
+        if text_column_record[i + 1] - text_column_record[i] > 1:
+            tmp_record.append((text_column_record[i] + 1, text_column_record[i + 1]))
+    text_column_record = tmp_record
+    # print(text_column_record)
+    return text_column_record
 
 
 def min_filter(data, size=3):  # block: size * size
@@ -138,6 +153,24 @@ def binarize(im):
     return data
 
 
+def extract_word_in_line(data, text_column_record, line_index):  # single line text
+    dir = '/Users/Jeiel/Desktop/tmp/'
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+    for i in range(len(text_column_record)):
+        im = create_im_with_data(data[:, text_column_record[i][0]: text_column_record[i][1]])
+        im.save(dir + str(line_index) + '_' + str(i + 1) + '.bmp')
+        # print(str(line_index) + '_' + str(i + 1) + ': ' + pytesseract.image_to_string(im, lang='chi_sim+eng'))
+
+
+def create_im_with_data(data):  # gray
+    im = Image.new('L', (data.shape[1], data.shape[0]))
+    pixels = im.load()
+    for i in range(im.width):
+        for j in range(im.height):
+            pixels[i, j] = int(data[j, i])
+    return im
+
 def main():
     im = Image.open('/Users/Jeiel/Dropbox/数字图像处理/实验/实验五-内容和素材/sample-24 copy.jpg')
     enhancer = ImageEnhance.Sharpness(im)
@@ -162,11 +195,20 @@ def main():
     # plt.show()
     # return
     # plt.figure()
-    # split_text_column(expand_data[text_line_record[0][0]: text_line_record[0][1]])
+    # text_line = expand_data[text_line_record[0][0]: text_line_record[0][1]]
+    # text_column_record = split_text_column(text_line)
+    # text_line = data[text_line_record[0][0]: text_line_record[0][1]]
+    # extract_word_in_line(text_line, text_column_record, 0)
     for i in range(len(text_line_record)):
         # plt.subplot(len(text_line_record), 1, i + 1)
         # plt.imshow(expand_data[text_line_record[i][0]: text_line_record[i][1]], cmap='gray')
-        split_text_column(expand_data[text_line_record[i][0]: text_line_record[i][1]])
+        # print(text_line_record[i][1] - text_line_record[i][0])
+        if text_line_record[i][1] - text_line_record[i][0] > 50:
+            expand_data[text_line_record[i][0]: text_line_record[i][1]] = min_filter(expand_data[text_line_record[i][0]: text_line_record[i][1]])
+        text_line = expand_data[text_line_record[i][0]: text_line_record[i][1]]
+        text_column_record = split_text_column(text_line)
+        text_line = data[text_line_record[i][0]: text_line_record[i][1]]
+        extract_word_in_line(text_line, text_column_record, i + 1)
     # plt.show()
 
 
