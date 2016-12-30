@@ -6,8 +6,6 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFilter
 from PIL import ImageEnhance
-# from scipy import misc
-# from scipy import ndimage
 import matplotlib.pyplot as plt
 import math
 import os
@@ -160,6 +158,7 @@ def extract_word_in_line(data, text_column_record, line_index):  # single line t
     for i in range(len(text_column_record)):
         im = create_im_with_data(data[:, text_column_record[i][0]: text_column_record[i][1]])
         im.save(dir + str(line_index) + '_' + str(i + 1) + '.bmp')
+        # print(dir + str(line_index) + '_' + str(i + 1) + '.bmp')
         # print(str(line_index) + '_' + str(i + 1) + ': ' + pytesseract.image_to_string(im, lang='chi_sim+eng'))
 
 

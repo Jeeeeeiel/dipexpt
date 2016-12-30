@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/Jeiel/github/dipexpt/LeNet_model_1000_double_size.tflearn"
+all_model_checkpoint_paths: "/Users/Jeiel/github/dipexpt/LeNet_model_1000_double_size.tflearn"
